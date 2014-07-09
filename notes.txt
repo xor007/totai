@@ -1,0 +1,163 @@
+use extern to validate preconditions and post conditions
+learn to use extern definitions for including CPP code into C program
+
+#if 0 //Why m I turning it off?
+
+   someCode
+#endif
+
+/** doxy comment
+* 
+*/
+{
+   someCode
+}
+
+name number and type of parameters form part of function signature.
+
+Difference between unsigned and signed char, has to do with 2s-complement
+
+Only ever cast like this: 
+
+- static_cast<TypeParent> (TypeChild) ; can cast any arithmetic to any other
+
+- const_cast<Template>(Expression) ; only add or remove constness
+
+- reinterpret_cast <T1*> (E) ;where E is of type T2* to treinterpret the pointer
+
+- dynamic_cast<T>(E)
+
+
+no need to fill the array with zeroes arr[3]={4} already fills the array with zeroes;
+
+only constructors and destructors are called linked to the scope but ALL local variables are created at beginning of a function and destroyed (popped out of the stack ) at the end of stack.
+
+All that static does is remove external linkage() and add global lifetime(loaded hard coded in the object file).
+
+make a "static" module function:
+
+use anonymous namespace:
+
+namespace {
+   extern T F (P);
+   ...;
+}
+
+F();
+
+namespace {
+   T F (P) {}; implementation
+}
+
+
+instead of(changes the storage class unecessarily):
+
+static T F (P);
+
+F();
+
+static T F (P){}
+
+
+We should now initialize as 
+
+int i{}; initializer list
+
+int global_int;
+int main()
+{
+called as ::global_int
+
+
+Address: a number that respresents the location of ONE BYTE in MEMORY
+T*: address of a T value
+
+
+C++ types are (when refering to variable, put it where there is a '.'):
+T.
+T*.
+T.(P); function type
+T(*.)[]; pointer to array
+T(*.)(P); ptr to function
+T<type> ; template
+
+Good definition of dereference
+*E "represents the value at address given by E"
+
+Initialization:
+- when calling, the caller is initializing
+- when returning, the return statement is initializing
+
+int &f()
+{
+   static int x = 5;
+   return x; means return *x (which goes out of scope, but it  is static, so it lives in the binary program file so it stays)
+}
+
+no operation on a void pointer except assignment
+make the pointer only const: int const *readOnlyPointer =n &i;
+make the pointer and var read only: const int * const rop;
+best to use references : const int & readOnlyPointerAndVar= i;
+
+const int i = get_size(); // ok: initialized at run time
+const int j = 42; // ok: initialized at compile time
+const int k; // error: k is uninitialized const
+int i = 42;
+const int ci = i; // ok: the value in i is copied into ci
+int j = ci; // ok: the value in ci is copied into j
+
+
+int i = 42;
+const int &r1 = i; // we can bind a const int& to a plain int object
+const int &r2 = 42; // ok: r1 is a reference to const
+const int &r3 = r1 * 2; // ok: r3 is a reference to const
+int &r4 = r * 2; // error: r4 is a plain, non const reference 
+
+const int temp = dval; // create a temporary const int from the double
+const int &ri = temp; // bind ri to that temporary
+
+Versions of Using:
+using namespace x;
+using x::f;
+//aliasingusing namspace short = long;
+
+Same name for anonymous namespace in the same file and it is made using from where it is defined.
+
+Default Storage class:
+- internal : not in the public symbol table
+- external : in the public symbol table
+
+Fake reference:
+double dval = 3.14;
+const int &ri = dval;
+
+Best way to define your struct, enum and union
+typedef enum|struct|union X{
+
+
+} X;
+
+when arrays are passed to a function, the function only receives the pointer to the first byte of the memory area of the array.
+
+****READ THE STANDARD LIBRARY CODE AND TRY TO UNDERSTAND HOW IT WORKS AND EXPERIMENT
+****WHEN SPEAKING (CODING), say ONLY what needs to the said at each point in code
+*** pass array of arrays to functions
+*** in iterators i + N sometimes gives the n+1th element and n>m tells who is after who.
+*** and iterators are actually glorified pointer arithmetic
+
+- To verify tonight: pointer arithmetic inside classes
+- construct the sum for arrays of arrays using the following trick:
+int a_0_[3*4] = {
+   11, 17, 13, 14,
+   21, 22, 23, 24,
+   31, 32, 33, 34
+   };
+   
+int *b[3] = {a_0_,
+   a_0_ + 1*sizeof(int[4]),
+   a_0_ + 2*sizeof(int[4])
+   };
+   
+int *p = b[0];
+sum( p, p + 3*sizeof( int[4] ) );
+sum( p, (int[4])p + 3 );
