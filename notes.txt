@@ -161,3 +161,54 @@ int *b[3] = {a_0_,
 int *p = b[0];
 sum( p, p + 3*sizeof( int[4] ) );
 sum( p, (int[4])p + 3 );
+
+
+functions defined in the header are automatically inlined.
+whenever possible, initialize in the header (in-class)
+instance member functions get a this pointer
+
+class C
+{
+   private: int data = 0;
+   void mf(int x){ cout << x * this->data; } //because it is a member function, actually means mf(C *this, int x)
+};
+
+C o1;
+C o2;
+
+
+o1.mf(5); //actually means: o1.mf(&o1, 5)
+o1.mf();
+
+initializer list Class::Constructor(): m(v), n(w) {} overrides in-class initialization
+
+Sales_data() = default "We say explicitly we want the default"
+
+Sales_data() = delete "We say we do no want a default 'default' or copy constructor"
+
+
+You can define a type in a class:
+
+class Screen {
+public:
+   typedef std::string::size_type pos;
+private:
+   pos cursor = 0;
+   pos height = 0, width = 0;
+   std::string contents;
+};
+
+
+We can make a member mutable to allow the specific member mutable in a const instance:
+class Screen {
+public:
+void some_member() const;
+private:
+mutable size_t access_ctr; // may change even in a const object
+// other members as before
+};
+void Screen::some_member() const
+{
+++access_ctr; // keep a count of the calls to any member function
+// whatever other work this member needs to do
+}
