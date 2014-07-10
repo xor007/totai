@@ -32,13 +32,13 @@ class Thing
    const int parts = INITIAL_TOTAL;
    const int len;
    std::vector<std::string> names;
-   
+   //std::initializer_list x;
    //public members of Thing
    public:
       Thing() ;
       Thing( const char *inN ) ;
-      Thing( std::vector<std::string> & initNames ) ;
-      Thing( const char *inN, std::vector<std::string> & initNames ) ;
+      Thing( std::initializer_list<std::string> initNames ) ;
+      Thing( const char *inN, std::initializer_list<std::string> initNames ) ;
       Thing( const Thing & rhs ): Thing() {
          cout << "Copying a Thing labelled "<< label << "..." << endl;
       }
@@ -70,14 +70,14 @@ Thing::Thing( const char *inN ): label(inN), len(6)
 
 }
 
-Thing::Thing( std::vector<std::string> & initNames ): Thing ("Initialized_Thing")
+Thing::Thing( std::initializer_list<std::string> initNames): Thing ("Initialized_Thing")
 {
    cout << " list initializing " << label << " is called ..." << endl;
    for (auto n = initNames.begin(); n != initNames.end(); ++n)
       names.push_back(*n);
 }
 
-Thing::Thing( const char *inN, std::vector<std::string> &  initNames ): Thing (inN)
+Thing::Thing( const char *inN, std::initializer_list<std::string> initNames ): Thing (inN)
 {
 
 }
@@ -104,6 +104,6 @@ int main()
 {
    Thing t;
    Thing r = t;
-   Thing s( { "onr", "dfhtwo", "thvhree", "fsdfhour" } );
+   Thing s { "onr", "dfhtwo", "thvhree", "fsdfhour" };
    return EXIT_SUCCESS;
 }
