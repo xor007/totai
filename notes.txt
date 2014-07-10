@@ -212,3 +212,29 @@ void Screen::some_member() const
 ++access_ctr; // keep a count of the calls to any member function
 // whatever other work this member needs to do
 }
+
+
+To avoid "is not initialized" errors, for const and reference members
+
+// ok: explicitly initialize reference and const members
+ConstRef::ConstRef(int ii): i(ii), ci(ii), ri(i) { }
+
+If class has constructor takes 1 argument, compiler adds an implicit cast operator. to prevent this, ALWAYS add "explicit" for constructors with 1 argument.
+
+You can yourself overload the static_cast in the other direction.
+
+Static member (func or variable), lives at global class level. in addition, the func does not receive a copy of *this
+
+references should not be members: they are there to refer to something.
+
+resizing of containers might lead to items lost.
+
+**********************************************************************************************************************
+* Always 
+*- think about what you want to happen in memory, and 
+*- think about builtin or simplest C++ objects and operations that I think result in it 
+*- read about them from authoritative source and try (The C++ Programming Language)
+*- always translate compiler error in terms of memory structures, types and possible operations
+*- do not write an instruction that is the first step to another instructions. If the full instruction is long, write a block and call it in
+*- Need to list the basic primitives and operations redefining and affecting primitives
+**********************************************************************************************************************
