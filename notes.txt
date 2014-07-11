@@ -1,3 +1,27 @@
+Concepts:
+   expression: type and value, constness, static|volatile, 
+   function:signature(s), return type
+   operator, rhs vs lhs
+      binary operators
+         assignment ( "=" )
+         call ( "()" )
+      unary operators
+         --
+         ++
+   copy
+   assignment
+   construction
+   destruction
+   names
+   scope
+   symbol table
+   
+Advanced/Fancy concepts:
+   lvalue vs rvalue reference
+   move assignment vs copy assignment
+   move constructor
+
+
 use extern to validate preconditions and post conditions
 learn to use extern definitions for including CPP code into C program
 
@@ -33,6 +57,7 @@ no need to fill the array with zeroes arr[3]={4} already fills the array with ze
 only constructors and destructors are called linked to the scope but ALL local variables are created at beginning of a function and destroyed (popped out of the stack ) at the end of stack.
 
 All that static does is remove external linkage() and add global lifetime(loaded hard coded in the object file).
+
 
 make a "static" module function:
 
@@ -238,3 +263,99 @@ resizing of containers might lead to items lost.
 *- do not write an instruction that is the first step to another instructions. If the full instruction is long, write a block and call it in
 *- Need to list the basic primitives and operations redefining and affecting primitives
 **********************************************************************************************************************
+
+
+Nicelly cleaned class:
+
+class S
+{
+private:
+   int * data_ = nulltr;
+   int num_ = 0;
+public:
+explicit S( int n = 0 ) {
+   data_ = new int [n];
+   num_ = n;
+   }
+   int & operator [] ( int ndx )
+   {
+   return data_ [ndx];
+   }
+   const int & operator[]( int ndx ) const
+   {
+      return data_[ndx];
+   }
+};
+
+S::S( const S& rhs )
+{
+   data_ = new int[ rhs.num_ ];
+   num_ = rhs.num_;
+   for ( int i = 0; i < num_; ++i )
+      data_[i] = rhs.data_[i];
+}
+
+S::~S()
+{
+   delete [] data_, data_ = nullptr;
+   num_ = 0;
+}
+
+S & S::operator=( const S & rhs)
+{
+   delete [] data_;
+   data_ = new int[rhs.num_];
+   num_ = rhs.num_;
+   return *this;
+}
+
+int main()
+{
+//...
+S a{0};
+a[i] = x;
+const S & r = 0;
+cout << r[i]
+S b[0];
+b = 0;
+//...
+}
+
+virtual functions: magically bind at runtime--> virtual function table of all the overriden versions of v functions.
+final makes a function that cannot be overriden.
+
+if you have a virtual function and a destructor, your destructor must virtual because otherwise only the base is destructed: no entry for destructor in virtual funct table.
+
+if you have a copy constructor in the base class, you should use it instead of normal constructor in the derived class's initializer list
+===============================
+"Class that acts like a pointer" must be tested to understand reference counting
+
+*** while investigating concepts, always try to come up with the simplest application possible of the concept to test only the concept
+
+func<type>(param1, param2) to specify the templated type to used.
+
+// ok: no distinction between typename and class in a template parameter list
+template <typename T, class U> calc (const T&, const U&);
+
+
+sum receiving magic len array:
+
+template <int N>
+int sum ( int arr[][N])
+{
+   int t = 0;
+   for ( int i = 0; i < N; ++i )
+      t += arr[i];
+   return t;
+}
+
+int a[3][5];
+sum<5>(a);
+
+**** Type deduction is at compile time.
+
+to specialize a templated function, prefix the declaration with template<> func(t T){}
+
+Renier Van Wyk:
+renier.vanwyk@gmail.com
+
