@@ -1,6 +1,6 @@
 #############################[ INCUS DATA ]###########################
 #                                                                    #
-# Example Makefile for the swipper demonstration project.           #
+# Example Makefile for the Thing demonstration project.           #
 #                                                                    #
 # NOTE: The syntax is based on GNU's make. It will work for make     #
 #       supplied with the MingW version of GCC and binutils. It      #
@@ -24,7 +24,7 @@ BIN=bin
 SRC=src
 OBJ=obj
 RES=res
-EXE1=swipper.exe
+EXE1=Thing.exe
 
 ## GENERIC RULE FOR C TO OBJECT ##
 #
@@ -41,14 +41,13 @@ EXE1=swipper.exe
 #
 # NOTE: The $? below provides a list of all dependends.
 # 
-$(BIN)/$(EXE1): $(OBJ)/swipper.o
+$(BIN)/$(EXE1): $(OBJ)/Thing.o
 	@echo LINKING $? TO GET $@
-	$(CC) -o $(BIN)/swipper $? $(LDFLAGS) 
+	$(CC) -o $(BIN)/Thing $? $(LDFLAGS) 
 
-$(OBJ)/swipper.o: $(SRC)/swipper.cpp
+$(OBJ)/Thing.o: $(SRC)/Thing.cpp
 	@echo COMPILING "$?" TO "$*.o"
 	$(CC) $(DBG) $(CPPFLAGS) -c -o $*.o $?
-
 
 ## D O C U M E N T A T I O N #########################################
 #
