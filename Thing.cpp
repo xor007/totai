@@ -36,18 +36,41 @@ class Thing
    //public members of Thing
    public:
       Thing() ;
-      Thing( const char *inN ) ;
+      explicit Thing( const char *inN ) ;
       Thing( std::initializer_list<std::string> initNames ) ;
       Thing( const char *inN, std::initializer_list<std::string> initNames ) ;
       Thing( const Thing & rhs ): Thing() {
          cout << "Copying a Thing labelled "<< label << "..." << endl;
       }
-/*       Thing & operator = (const Thing & rhs)
+      Thing & operator = (const Thing & rhs)
       {
+         cout << " assignment copy operator called on " << label << " ..." << endl;
          if ( this == &rhs )
             return *this;
+         cout << " guard not true " << label << " ..." << endl;
+         label = rhs.label;
+         names = rhs.names;
          return *this;
-      } */
+      }
+      Thing & operator = (Thing && rhs)
+      {
+         cout << " Move assignment copy operator called on " << label << " ..." << endl;
+         if ( this == &rhs )
+            return *this;
+         cout << " guard not true " << label << " ..." << endl;
+         label = rhs.label;
+         names = rhs.names;
+         rhs.label.clear();
+         rhs.names.clear();
+         return *this;
+      }
+      Thing(Thing && rhs ): Thing()
+      {
+         cout << "Moving a Thing labelled "<< label << "..." << endl;
+         rhs.label.clear();
+         rhs.names.clear();
+      }
+      std::string getLabel(){    std::string res; res = label; return res;}
       ~Thing();
       void printNames();
       
@@ -59,7 +82,7 @@ int Thing::numberOfThings = INITIAL_TOTAL;
 std::string concatNames( Thing & inT )
 {
    std::string res = "Names :" ;
-   for (auto n = inT.names.begin(); n != inT.names.end(); ++n)
+   for ( auto n = inT.names.begin(); n != inT.names.end(); ++n )
       res += *n + "," ;
    return res;
 }
@@ -67,43 +90,58 @@ std::string concatNames( Thing & inT )
 
 Thing::Thing( const char *inN ): label(inN), len(6)
 {
-
+   cout << " Default Constructor for Thing labelled " << label << " is called ..." << "there are " << numberOfThings << "things" << endl;
+   numberOfThings++;
 }
 
-Thing::Thing( std::initializer_list<std::string> initNames): Thing ("Initialized_Thing")
+Thing::Thing( std::initializer_list<std::string> initNames ): Thing ("Initialized_Thing")
 {
-   cout << " list initializing " << label << " is called ..." << endl;
-   for (auto n = initNames.begin(); n != initNames.end(); ++n)
+   cout << " Default Constructor for Thing labelled " << label << " is called ..." << "there are " << numberOfThings << "things" << endl;
+   cout << " list initializing " << label << " is called ..." << "there are " << numberOfThings << "things" << endl;
+   for ( auto n = initNames.begin(); n != initNames.end(); ++n )
       names.push_back(*n);
 }
 
 Thing::Thing( const char *inN, std::initializer_list<std::string> initNames ): Thing (inN)
 {
+   cout << " list initializing " << label << " is called ..." << endl;
+   for ( auto n = initNames.begin(); n != initNames.end(); ++n )
+      names.push_back(*n);
 
 }
 
 Thing::Thing(): label("no_name"), len(6)
 {
-   cout << " Default Constructor for Thing labelled " << label << " is called ..." << endl;
+   cout << " Default Constructor for Thing labelled " << label << " is called ..." << "there are " << numberOfThings << "things" << endl;
+   numberOfThings++;
 }
 
 Thing::~Thing()
 {
-   cout << " Default Destructor for Thing labelled " << label << " is called ..." << endl;
+   cout << " Default Destructor for Thing labelled " << label << " is called ..." << "there are " << numberOfThings << "things" << endl;
+   numberOfThings--;
 }
 
 void Thing::printNames()
 {
-   cout << "List of names in this thing(" << label << "): "  << endl;
-   for (auto n = names.begin(); n != names.end(); ++n)
+   cout << "List of names in this thing( " << label << " ): "  << "there are " << numberOfThings << "things" << endl;
+   for ( auto n = names.begin(); n != names.end(); ++n )
       cout << *n << endl;
 }
 
 
 int main()
 {
-   Thing t;
-   Thing r = t;
+   Thing d = Thing( "dog" );
+   Thing r = d;
    Thing s { "onr", "dfhtwo", "thvhree", "fsdfhour" };
+   Thing m = static_cast<Thing>( "man" );
+   
+   //testing move
+   m = std::move(s);
+   cout << "man is now a : " << m.getLabel() << endl;
+   cout << "m:" << concatNames ( m ) << endl;
+   cout << "s:" << concatNames ( s ) << endl;
+   
    return EXIT_SUCCESS;
 }
